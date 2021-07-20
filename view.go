@@ -56,6 +56,9 @@ type View struct {
 	// If Frame is true, a border will be drawn around the view.
 	Frame bool
 
+	// FrameColor allow to configure the color of the frame when it is not highlighted.
+	FrameColor Attribute
+
 	// If Wrap is true, the content that is written to this View is
 	// automatically wrapped when it is longer than its width. If true the
 	// view's x-origin will be ignored.
@@ -67,6 +70,9 @@ type View struct {
 
 	// If Frame is true, Title allows to configure a title for the view.
 	Title string
+
+	// TitleColor allow to configure the color of title for the view.
+	TitleColor Attribute
 
 	// If Mask is true, the View will display the mask instead of the real
 	// content
@@ -107,6 +113,11 @@ func newView(name string, x0, y0, x1, y1 int, mode OutputMode) *View {
 		tainted: true,
 		ei:      newEscapeInterpreter(mode),
 	}
+
+	v.FgColor, v.BgColor = ColorDefault, ColorDefault
+	v.SelFgColor, v.SelBgColor = ColorDefault, ColorDefault
+	v.TitleColor, v.FrameColor = ColorDefault, ColorDefault
+
 	return v
 }
 
