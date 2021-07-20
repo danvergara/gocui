@@ -301,10 +301,12 @@ func (v *View) draw() error {
 
 	if v.Wrap {
 		if maxX == 0 {
-			return errors.New("X size of the view cannot be 0")
+			return errors.New("x size of the view cannot be 0")
 		}
+
 		v.ox = 0
 	}
+
 	if v.tainted {
 		v.viewLines = nil
 		for i, line := range v.lines {
@@ -329,17 +331,20 @@ func (v *View) draw() error {
 				v.viewLines = append(v.viewLines, vline)
 			}
 		}
+
 		v.tainted = false
 	}
 
 	if v.Autoscroll && len(v.viewLines) > maxY {
 		v.oy = len(v.viewLines) - maxY
 	}
+
 	y := 0
 	for i, vline := range v.viewLines {
 		if i < v.oy {
 			continue
 		}
+
 		if y >= maxY {
 			break
 		}
@@ -368,6 +373,7 @@ func (v *View) draw() error {
 		}
 		y++
 	}
+
 	return nil
 }
 
