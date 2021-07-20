@@ -56,6 +56,9 @@ type View struct {
 	// If Frame is true, a border will be drawn around the view.
 	Frame bool
 
+	// FrameColor allow to configure the color of the frame when it is not highlighted.
+	FrameColor Attribute
+
 	// If Wrap is true, the content that is written to this View is
 	// automatically wrapped when it is longer than its width. If true the
 	// view's x-origin will be ignored.
@@ -67,6 +70,9 @@ type View struct {
 
 	// If Frame is true, Title allows to configure a title for the view.
 	Title string
+
+	// TitleColor allow to configure the color of title for the view.
+	TitleColor Attribute
 
 	// If Mask is true, the View will display the mask instead of the real
 	// content
@@ -107,6 +113,11 @@ func newView(name string, x0, y0, x1, y1 int, mode OutputMode) *View {
 		tainted: true,
 		ei:      newEscapeInterpreter(mode),
 	}
+
+	v.FgColor, v.BgColor = ColorDefault, ColorDefault
+	v.SelFgColor, v.SelBgColor = ColorDefault, ColorDefault
+	v.TitleColor, v.FrameColor = ColorDefault, ColorDefault
+
 	return v
 }
 
@@ -290,10 +301,12 @@ func (v *View) draw() error {
 
 	if v.Wrap {
 		if maxX == 0 {
-			return errors.New("X size of the view cannot be 0")
+			return errors.New("x size of the view cannot be 0")
 		}
+
 		v.ox = 0
 	}
+
 	if v.tainted {
 		v.viewLines = nil
 		for i, line := range v.lines {
@@ -318,17 +331,20 @@ func (v *View) draw() error {
 				v.viewLines = append(v.viewLines, vline)
 			}
 		}
+
 		v.tainted = false
 	}
 
 	if v.Autoscroll && len(v.viewLines) > maxY {
 		v.oy = len(v.viewLines) - maxY
 	}
+
 	y := 0
 	for i, vline := range v.viewLines {
 		if i < v.oy {
 			continue
 		}
+
 		if y >= maxY {
 			break
 		}
@@ -357,6 +373,7 @@ func (v *View) draw() error {
 		}
 		y++
 	}
+
 	return nil
 }
 
